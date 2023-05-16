@@ -1,0 +1,50 @@
+
+DATASET LINK: https://drive.google.com/file/d/1qkQyjht-8PEvtM42e8MramnqOb8knYG1/view?usp=sharing 
+Extract it inside "EPCDepth" file path
+--------------------------
+TRAINED MODEL LINK:
+model 1:https://drive.google.com/file/d/1mjQj-2mlKvBS-Wxm0vAJZ2rNQhB_3J-J/view?usp=sharing
+model 2: https://drive.google.com/file/d/1QXvFaMq_U0RVyeX3lynHVTl1OMj1bvAI/view?usp=sharing
+Extract them inside "EPCDepth/saved_models" file path
+
+--------------------------
+[CODE FOR PREPARING ALL REQUIRED RESOURCES]
+The entire code segment can be divided into three main tasks:
+[Run command] : cd EPCDepth
+Train:
+
+For training "encoder+intrinsic_decoder" pipeline:
+[Run the command]: 
+python3 main.py 
+--data_path "../depth_selection/test_depth_completion_anonymous" //path for dataset
+--models_dir "saved_models" 						    //directory to save trained model
+--logs_dir "logs" --pretrained --post_process
+[Ouput]:
+Trained model will be saved in the "saved_models" directory
+---------------------------
+Extracting Depth Map:
+
+python3 main.py 
+--val --val_depth 
+--data_path "../depth_selection/test_depth_completion_anonymous" 
+--resume "saved_models/model18.pth.tar" 
+--use_full_scale --post_process --output_scale 0 
+--disps_path "disparity"
+
+!python3 main.py --vis --disps_path '/content/EPCDepth2/EPCDepth/disparity'
+---------------------------
+Extracting Intrinsic Matrix:
+
+python3 main.py 
+--val 
+--data_path "../depth_selection/test_depth_completion_anonymous" 
+--resume "saved_models/model18updated.pth.tar" 
+--use_full_scale --post_process --output_scale 0 
+--disps_path "disparity"
+
+[CODE FOR GENERATING POINT CLOUDS AND EVALUATION]
+in file "depthmap_to_pcd"
+update path for source_disp_path, source_matrix_path, target_disp_path, target_matrix_path accordingly
+[Run command]: python3 depthmap_to_pcd
+[Output]: [NOTE: MAY TAKE SOME TIME TO RUN] 
+CHAMFER DISTANCE FOR EACH IMAGE WITH RESPECT TO ITS GROUND TRUTH 
